@@ -1,0 +1,28 @@
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Dependencies
+node_modules/
+
+# OSX
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local

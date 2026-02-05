@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster - Earn Points & Streaks</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-top">
+                <h1>🎯 TaskMaster</h1>
+                <div class="google-auth">
+                    <div id="googleSignInButton"></div>
+                    <div id="userInfo" class="user-info" style="display: none;">
+                        <img id="userProfilePic" src="" alt="Profile">
+                        <span id="userName"></span>
+                        <button id="signOutBtn" class="sign-out-btn">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+            <p class="subtitle">Complete tasks, earn points, build streaks!</p>
+            
+            <!-- Navigation Tabs -->
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-tab="dashboard">Dashboard</button>
+                <button class="nav-tab" data-tab="tasks">Tasks & Categories</button>
+                <button class="nav-tab" data-tab="calendar">Calendar</button>
+            </nav>
+        </header>
+
+        <!-- Stats Dashboard -->
+        <div class="tab-content active" id="dashboard-tab">
+            <div class="stats-dashboard">
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-content">
+                    <div class="stat-label">Points</div>
+                    <div class="stat-value" id="points">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-content">
+                    <div class="stat-label">Current Streak</div>
+                    <div class="stat-value" id="streak">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-content">
+                    <div class="stat-label">Tasks Today</div>
+                    <div class="stat-value" id="tasksToday">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="taskInput" 
+                    class="task-input" 
+                    placeholder="Add a new task..."
+                    autocomplete="off"
+                >
+                <button class="add-btn" id="addBtn">+ Add Task</button>
+            </div>
+            <div class="priority-selector">
+                <label for="priority">Priority:</label>
+                <select id="priority" class="priority-select">
+                    <option value="1">Low (1 pt)</option>
+                    <option value="3" selected>Medium (3 pts)</option>
+                    <option value="5">High (5 pts)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tasks Section -->
+        <div class="tasks-section">
+            <h2>Today's Tasks</h2>
+            <div class="tasks-list" id="tasksList">
+                <p class="empty-message">No tasks yet. Add one to get started! 🚀</p>
+            </div>
+        </div>
+
+        <!-- Prizes Section -->
+        <div class="prizes-section">
+            <h2>🏆 Achievements & Prizes</h2>
+            <div class="prizes-grid" id="prizesGrid">
+                <div class="prize-card">
+                    <div class="prize-icon">🥉</div>
+                    <div class="prize-info">
+                        <div class="prize-name">Bronze</div>
+                        <div class="prize-condition">10 Points</div>
+                    </div>
+                    <div class="prize-status" id="prize-bronze">🔒</div>
+                </div>
+                <div class="prize-card">
+                    <div class="prize-icon">🥈</div>
+                    <div class="prize-info">
+                        <div class="prize-name">Silver</div>
+                        <div class="prize-condition">25 Points</div>
+                    </div>
+                    <div class="prize-status" id="prize-silver">🔒</div>
+                </div>
+                <div class="prize-card">
+                    <div class="prize-icon">🥇</div>
+                    <div class="prize-info">
+                        <div class="prize-name">Gold</div>
+                        <div class="prize-condition">50 Points</div>
+                    </div>
+                    <div class="prize-status" id="prize-gold">🔒</div>
+                </div>
+                <div class="prize-card">
+                    <div class="prize-icon">👑</div>
+                    <div class="prize-info">
+                        <div class="prize-name">Platinum</div>
+                        <div class="prize-condition">100 Points</div>
+                    </div>
+                    <div class="prize-status" id="prize-platinum">🔒</div>
+                </div>
+                <div class="prize-card">
+                    <div class="prize-icon">🔥</div>
+                    <div class="prize-info">
+                        <div class="prize-name">On Fire</div>
+                        <div class="prize-condition">7-Day Streak</div>
+                    </div>
+                    <div class="prize-status" id="prize-streak7">🔒</div>
+                </div>
+                <div class="prize-card">
+                    <div class="prize-icon">💎</div>
+                    <div class="prize-info">
+                        <div class="prize-name">Diamond</div>
+                        <div class="prize-condition">30-Day Streak</div>
+                    </div>
+                    <div class="prize-status" id="prize-streak30">🔒</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="reset-btn" id="resetBtn">Reset Daily</button>
+            <button class="clear-all-btn" id="clearBtn">Clear All Data</button>
+        </div>
+        </div>
+
+        <!-- TASKS & CATEGORIES TAB -->
+        <div class="tab-content" id="tasks-tab">
+            <div class="categories-section">
+                <h2>📂 Task Categories</h2>
+                
+                <!-- Add Category Form -->
+                <div class="add-category-form">
+                    <input 
+                        type="text" 
+                        id="categoryInput" 
+                        class="category-input" 
+                        placeholder="Enter category name..."
+                        autocomplete="off"
+                    >
+                    <div class="category-color-picker">
+                        <label>Color:</label>
+                        <div class="color-options">
+                            <input type="color" id="categoryColor" value="#667eea">
+                        </div>
+                    </div>
+                    <button class="add-category-btn" id="addCategoryBtn">+ Add Category</button>
+                </div>
+
+                <!-- Categories Display -->
+                <div class="categories-grid" id="categoriesGrid">
+                    <!-- Categories will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Tasks Input (moved from dashboard) -->
+            <div class="tasks-input-section">
+                <h2>📋 Add Task to Category</h2>
+                <div class="input-section">
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="taskInputCategory" 
+                            class="task-input" 
+                            placeholder="Add a new task..."
+                            autocomplete="off"
+                        >
+                        <button class="add-btn" id="addBtnCategory">+ Add Task</button>
+                    </div>
+                    <div class="priority-selector">
+                        <label for="priorityCategory">Priority:</label>
+                        <select id="priorityCategory" class="priority-select">
+                            <option value="1">Low (1 pt)</option>
+                            <option value="3" selected>Medium (3 pts)</option>
+                            <option value="5">High (5 pts)</option>
+                        </select>
+                        <label for="categorySelect">Category:</label>
+                        <select id="categorySelect" class="priority-select">
+                            <option value="">No Category</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CALENDAR TAB -->
+        <div class="tab-content" id="calendar-tab">
+            <div class="calendar-section">
+                <h2>📅 Calendar</h2>
+                
+                <div class="calendar-controls">
+                    <button id="prevMonthBtn" class="calendar-nav-btn">← Previous</button>
+                    <h3 id="currentMonth"></h3>
+                    <button id="nextMonthBtn" class="calendar-nav-btn">Next →</button>
+                    
+                    <div class="calendar-sync">
+                        <button id="syncGoogleBtn" class="sync-btn" style="display: none;">Sync with Google Calendar</button>
+                        <select id="calendarSelect" class="calendar-select" style="display: none;">
+                            <option value="">Select a calendar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="calendar-container">
+                    <div class="calendar" id="calendar">
+                        <!-- Calendar will be rendered here -->
+                    </div>
+                </div>
+
+                <div class="calendar-events">
+                    <h3>Events on <span id="selectedDate"></span></h3>
+                    <div class="events-list" id="eventsList">
+                        <p class="empty-message">No events selected</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="reset-btn" id="resetBtn">Reset Daily</button>
+            <button class="clear-all-btn" id="clearBtn">Clear All Data</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
